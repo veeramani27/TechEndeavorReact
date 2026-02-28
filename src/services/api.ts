@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "https://techendeavorbackend-production.up.railway.app/"; // FastAPI backend URL
+const API_URL = "https://techendeavorbackend-production.up.railway.app/";
 
 const api = axios.create({
   baseURL: API_URL,
