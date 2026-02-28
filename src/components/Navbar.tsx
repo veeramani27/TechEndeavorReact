@@ -29,7 +29,7 @@ const Navbar: FC = () => {
   return (
     <nav className="w-full bg-slate-900 text-white shadow-2xl sticky top-0 z-50">
       <div className="max-w-[1920px] mx-auto px-2 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-xl sm:text-2xl font-black tracking-tighter hover:text-blue-400 transition-all flex-shrink-0">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
@@ -41,7 +41,7 @@ const Navbar: FC = () => {
           {/* Unified Navigation - Always Visible */}
           <div className="flex items-center gap-2 sm:gap-8">
             <Link to="/" className="text-[10px] sm:text-sm font-bold hover:text-blue-400 transition-colors uppercase tracking-[0.1em] sm:tracking-widest">
-              Feed
+              Home
             </Link>
             
             {user ? (

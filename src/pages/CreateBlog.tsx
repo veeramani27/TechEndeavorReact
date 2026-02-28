@@ -45,7 +45,7 @@ const CreateBlog: FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Blog Title</label>
+            <label className="block text-lg font-bold text-slate-700 mb-2">Blog Title</label>
             <input
               type="text"
               className="w-full px-5 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-lg font-medium"
@@ -56,7 +56,7 @@ const CreateBlog: FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Content</label>
+            <label className="block text-lg font-bold text-slate-700 mb-2">Content</label>
             <textarea
               className="w-full px-5 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all min-h-[300px] leading-relaxed"
               value={content}
@@ -65,20 +65,20 @@ const CreateBlog: FC = () => {
               placeholder="Write your article here..."
             />
           </div>
-          <div className="flex items-center gap-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Publishing...' : 'Publish Post'}
-            </button>
+          <div className="flex items-center gap-4 justify-end">
             <button
               type="button"
               onClick={() => navigate('/')}
               className="text-slate-500 font-semibold hover:text-slate-700 px-6"
             >
               Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Publishing...' : 'Publish Post'}
             </button>
           </div>
         </form>

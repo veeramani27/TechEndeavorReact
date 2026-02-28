@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, ArrowRight, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../services/api';
 
 interface Blog {
@@ -41,12 +41,50 @@ const Home: FC = () => {
     fetchBlogs(currentPage);
   }, [currentPage]);
 
+  // Scroll restoration logic
+  useEffect(() => {
+    if (!loading && blogs.length > 0) {
+      const lastId = sessionStorage.getItem('lastViewedBlogId');
+      if (lastId) {
+        const element = document.getElementById(`blog-${lastId}`);
+        if (element) {
+          // Use setTimeout to ensure DOM is ready and layout is stable
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'auto', block: 'center' });
+            sessionStorage.removeItem('lastViewedBlogId');
+          }, 100);
+        }
+      }
+    }
+  }, [loading, blogs]);
+
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  const handleReadArticle = (id: number) => {
+    sessionStorage.setItem('lastViewedBlogId', id.toString());
+    navigate(`/blog/${id}`);
+  };
+
+  const groupedBlogs = useMemo(() => {
+    return blogs.reduce((acc, blog) => {
+      const date = new Date(blog.created_at).toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(blog);
+      return acc;
+    }, {} as Record<string, Blog[]>);
+  }, [blogs]);
 
   if (loading && blogs.length === 0) return (
     <div className="flex justify-center items-center h-screen bg-white">
@@ -55,9 +93,9 @@ const Home: FC = () => {
   );
 
   return (
-    <div className="w-full bg-white pb-24">
+    <div className="w-full bg-white pb-14">
       {/* Hero Section */}
-      <section className="bg-slate-900 text-white py-18 px-6 sm:px-8">
+      <section className="bg-slate-900 text-white py-10 px-6 sm:px-8">
         <div className="max-w-[1920px] mx-auto">
           <div className="max-w-4xl">
             <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-none">
@@ -72,7 +110,7 @@ const Home: FC = () => {
       </section>
 
       {/* Main Content */}
-      <div className="max-w-5/6 mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+      <div className="max-w-5/6 mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         {error && (
           <div className="bg-red-50 border-2 border-red-100 p-6 mb-12 rounded-2xl flex items-center gap-4 text-red-700 font-bold">
             <span className="bg-red-500 text-white p-1 rounded-lg">!</span>
@@ -86,56 +124,46 @@ const Home: FC = () => {
             <p className="text-slate-500 mt-2">Check back soon for new insights.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-12">
-            {blogs.map((blog) => (
-              <article 
-                key={blog.id} 
-                className="group flex flex-col md:flex-row gap-8 bg-white border-b border-slate-100 pb-12 hover:border-blue-100 transition-all"
-              >
-                <div className="w-full md:w-80 h-48 md:h-auto bg-slate-50 rounded-2xl flex-shrink-0 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                   <div className="p-8 text-slate-200 group-hover:text-blue-200">
-                      <Calendar size={64} strokeWidth={1} />
-                   </div>
+          <div className="space-y-8">
+            {Object.entries(groupedBlogs).map(([date, groupBlogs]) => (
+              <div key={date}>
+                <div className="sticky top-16 bg-white/95 backdrop-blur-sm z-10 py-4 mb-4 border-b border-slate-100">
+                   <h3 className="text-lg font-bold text-slate-500 uppercase tracking-widest">{date}</h3>
                 </div>
-
-                <div className="flex-grow flex flex-col justify-between py-2">
-                  <div>
-                    <div className="flex items-center gap-4 text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">
-                      <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">
-                      {blog.title}
-                    </h2>
-                    <p className="text-slate-500 text-lg leading-relaxed line-clamp-2 max-w-4xl">
-                      {blog.content}
-                    </p>
-                  </div>
-
-                  <div className="mt-8 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
-                        <User size={14} className="text-slate-400" />
-                      </div>
-                      <span className="text-sm font-bold text-slate-700">{blog.author?.username || 'Guest Writer'}</span>
-                    </div>
-                    
-                    <button 
-                      onClick={() => navigate(`/blog/${blog.id}`)}
-                      className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-tighter text-sm hover:gap-4 transition-all"
+                <div className="grid grid-cols-1 gap-6">
+                  {groupBlogs.map((blog) => (
+                    <article 
+                      key={blog.id} 
+                      id={`blog-${blog.id}`}
+                      className="group bg-white p-3 sm:p-5 rounded-2xl border border-slate-300 hover:border-blue-100 hover:shadow-lg transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
                     >
-                      Read Full Article
-                      <ArrowRight size={20} />
-                    </button>
-                  </div>
+                      <div className="flex-grow">
+                        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-3 group-hover:text-blue-600 transition-colors leading-tight">
+                          {blog.title}
+                        </h2>
+                        <p className="text-slate-500 text-base sm:text-lg leading-relaxed line-clamp-2 max-w-4xl">
+                          {blog.content}
+                        </p>
+                      </div>
+
+                      <button 
+                        onClick={() => handleReadArticle(blog.id)}
+                        className="flex-shrink-0 flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-bold transition-all shadow-md hover:shadow-blue-500/30 whitespace-nowrap"
+                      >
+                        Read Full Article
+                        <ArrowRight size={18} />
+                      </button>
+                    </article>
+                  ))}
                 </div>
-              </article>
+              </div>
             ))}
           </div>
         )}
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="mt-20 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}

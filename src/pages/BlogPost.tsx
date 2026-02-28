@@ -54,28 +54,26 @@ const BlogPost: FC = () => {
 
   return (
     <div className="w-full bg-white">
-      <div className="max-w-4xl mx-auto py-16 px-6 sm:px-8">
+      <div className="max-w-4xl mx-auto py-10 px-6 sm:px-8">
         <button 
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-bold mb-12 group"
+          className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-bold mb-8 group"
         >
           <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           Back to Feed
         </button>
 
         <header className="mb-12">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight mb-8">
+            {blog.title}
+          </h1>
           <div className="flex items-center gap-4 text-sm font-bold text-blue-600 uppercase tracking-widest mb-6">
-            <span>Engineering</span>
-            <span>•</span>
             <div className="flex items-center gap-1">
               <Calendar size={14} />
               {new Date(blog.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight mb-8">
-            {blog.title}
-          </h1>
-          <div className="flex items-center gap-4 py-6 border-y border-slate-100">
+          <div className="flex items-center gap-4 py-6 border-y border-slate-200">
             <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
               <User size={24} />
             </div>
