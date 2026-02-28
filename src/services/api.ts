@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000'; // FastAPI backend URL
+const API_URL = "https://techendeavorbackend-production.up.railway.app/"; // FastAPI backend URL
 
 const api = axios.create({
   baseURL: API_URL,
