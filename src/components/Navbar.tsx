@@ -66,7 +66,7 @@ const Navbar: FC = () => {
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-3 w-48 sm:w-64 bg-white rounded-xl sm:rounded-2xl shadow-2xl py-2 border border-slate-100 animate-in fade-in slide-in-from-top-2 duration-200">
                       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-50">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Authenticated as</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Logged In as</p>
                         <p className="text-slate-900 font-bold truncate text-sm sm:text-base">{user.username}</p>
                         <p className="text-slate-500 text-[10px] sm:text-xs truncate">{user.email}</p>
                       </div>
