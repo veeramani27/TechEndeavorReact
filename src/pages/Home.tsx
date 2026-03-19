@@ -3,6 +3,7 @@ import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../services/api';
+import { BlogCardSkeleton } from '../components/SkeletonLoader';
 
 interface Blog {
   id: number;
@@ -24,13 +25,14 @@ const Home: FC = () => {
 
   const fetchBlogs = async (page: number) => {
     setLoading(true);
+    setError('');
     try {
       const response = await api.get(`/blogs/?page=${page}&limit=25`);
       setBlogs(response.data.items);
       setTotalPages(response.data.total_pages);
       setCurrentPage(response.data.page);
     } catch (err) {
-      setError('Failed to connect to the TechEndeavor API.');
+      setError('Failed to connect to the TechEndeavor API. The backend might be starting up, please wait...');
       console.error(err);
     } finally {
       setLoading(false);
@@ -86,12 +88,6 @@ const Home: FC = () => {
     }, {} as Record<string, Blog[]>);
   }, [blogs]);
 
-  if (loading && blogs.length === 0) return (
-    <div className="flex justify-center items-center h-screen bg-white">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-    </div>
-  );
-
   return (
     <div className="w-full bg-white pb-14">
       {/* Hero Section */}
@@ -118,7 +114,16 @@ const Home: FC = () => {
           </div>
         )}
 
-        {blogs.length === 0 && !error ? (
+        {loading && blogs.length === 0 ? (
+          <div className="space-y-8">
+             <div className="h-8 w-64 bg-slate-100 animate-pulse rounded mb-4"></div>
+             <div className="grid grid-cols-1 gap-6">
+                {[...Array(5)].map((_, i) => (
+                  <BlogCardSkeleton key={i} />
+                ))}
+             </div>
+          </div>
+        ) : blogs.length === 0 && !error ? (
           <div className="text-center py-32 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
             <p className="text-2xl font-black text-slate-400 uppercase tracking-widest">Feed is empty</p>
             <p className="text-slate-500 mt-2">Check back soon for new insights.</p>

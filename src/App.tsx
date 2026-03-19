@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import CreateBlog from './pages/CreateBlog';
 import BlogPost from './pages/BlogPost';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
@@ -28,9 +29,11 @@ function App() {
               </p>
             </div>
           </footer>
+	  <Analytics />
         </div>
       </Router>
     </AuthProvider>
+    
   );
 }
 

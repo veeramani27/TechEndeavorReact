@@ -8,6 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { BlogPostSkeleton } from '../components/SkeletonLoader';
 
 interface Blog {
   id: number;
@@ -30,11 +31,13 @@ const BlogPost: FC = () => {
 
   useEffect(() => {
     const fetchBlog = async () => {
+      setLoading(true);
+      setError('');
       try {
         const response = await api.get(`/blogs/${id}`);
         setBlog(response.data);
       } catch (err) {
-        setError('Failed to load the article.');
+        setError('Failed to load the article. It might be due to a backend cold start, please try again in a few seconds.');
         console.error(err);
       } finally {
         setLoading(false);
@@ -46,11 +49,7 @@ const BlogPost: FC = () => {
     }
   }, [id]);
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-screen bg-white">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-    </div>
-  );
+  if (loading && !blog) return <BlogPostSkeleton />;
 
   if (error || !blog) return (
     <div className="max-w-4xl mx-auto py-20 px-6 text-center">
