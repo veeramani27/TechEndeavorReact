@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // const API_URL = "http://localhost:8000";
-const API_URL = "https://techendeavorbackend-production.up.railway.app/";
+// const BACKUP_API_URL = "https://techendeavorbackend-production.up.railway.app/";
+const API_URL = "https://tech-endeavor.fastapicloud.dev/";
 
 const api = axios.create({
   baseURL: API_URL,
