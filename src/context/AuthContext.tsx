@@ -45,12 +45,27 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [token]);
 
+  useEffect(() => {
+    const handleLogout = () => {
+      logout();
+    };
+    window.addEventListener('auth:logout', handleLogout);
+    return () => {
+      window.removeEventListener('auth:logout', handleLogout);
+    };
+  }, []);
+
   const login = (newToken: string) => {
     localStorage.setItem('token', newToken);
     setToken(newToken);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post('/logout');
+    } catch (e) {
+      console.error('Logout failed on backend:', e);
+    }
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
